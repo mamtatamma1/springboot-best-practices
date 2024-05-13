@@ -1,0 +1,150 @@
+diff --git a/pom.xml b/pom.xml
+index 1a935b2..a6879ea 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -1,12 +1,13 @@ org.openrewrite.config.CompositeRecipe
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
++        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+     <modelVersion>4.0.0</modelVersion>
+     <parent>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-parent</artifactId>
+-        <version>2.7.5</version>
+-        <relativePath/> <!-- lookup parent from repository -->
++        <version>3.2.5</version>
++        <relativePath/>
++        <!-- lookup parent from repository -->
+     </parent>
+     <groupId>com.javatechie</groupId>
+     <artifactId>product-service</artifactId>
+@@ -14,7 +15,7 @@
+     <name>product-service</name>
+     <description>Spring Boot Best Practices for Developers</description>
+     <properties>
+-        <java.version>1.8</java.version>
++        <java.version>17</java.version>
+     </properties>
+     <dependencies>
+         <dependency>
+@@ -55,9 +56,8 @@
+             <version>3.0.3</version>
+         </dependency>
+         <dependency>
+-            <groupId>junit</groupId>
+-            <artifactId>junit</artifactId>
+-            <scope>test</scope>
++            <groupId>jakarta.validation</groupId>
++            <artifactId>jakarta.validation-api</artifactId>
+         </dependency>
+     </dependencies>
+ 
+
+diff --git a/src/main/java/com/javatechie/dto/ProductRequestDTO.java b/src/main/java/com/javatechie/dto/ProductRequestDTO.java
+index 57a2ab4..f7e93c8 100644
+--- a/src/main/java/com/javatechie/dto/ProductRequestDTO.java
++++ b/src/main/java/com/javatechie/dto/ProductRequestDTO.java
+@@ -1,11 +1,14 @@ org.openrewrite.config.CompositeRecipe
+ package com.javatechie.dto;
+ 
+ 
+-import lombok.*;
++import lombok.AllArgsConstructor;
++import lombok.Data;
++import lombok.EqualsAndHashCode;
++import lombok.NoArgsConstructor;
+ 
+-import javax.validation.constraints.Max;
+-import javax.validation.constraints.Min;
+-import javax.validation.constraints.NotBlank;
++import jakarta.validation.constraints.Max;
++import jakarta.validation.constraints.Min;
++import jakarta.validation.constraints.NotBlank;
+ import java.util.Objects;
+ 
+ @Data
+
+diff --git a/src/main/java/com/javatechie/controller/ProductController.java b/src/main/java/com/javatechie/controller/ProductController.java
+index dde47a6..fcb5ac3 100644
+--- a/src/main/java/com/javatechie/controller/ProductController.java
++++ b/src/main/java/com/javatechie/controller/ProductController.java
+@@ -11,7 +11,7 @@ org.openrewrite.config.CompositeRecipe
+ import org.springframework.http.ResponseEntity;
+ import org.springframework.web.bind.annotation.*;
+ 
+-import javax.validation.Valid;
++import jakarta.validation.Valid;
+ import java.util.List;
+ import java.util.Map;
+ 
+
+diff --git a/src/main/java/com/javatechie/entity/Product.java b/src/main/java/com/javatechie/entity/Product.java
+index d0f0409..5ff1391 100644
+--- a/src/main/java/com/javatechie/entity/Product.java
++++ b/src/main/java/com/javatechie/entity/Product.java
+@@ -4,7 +4,7 @@ org.openrewrite.config.CompositeRecipe
+ import lombok.Data;
+ import lombok.NoArgsConstructor;
+ 
+-import javax.persistence.*;
++import jakarta.persistence.*;
+ 
+ @Entity
+ @Table(name = "PRODUCTS")
+
+diff --git a/src/test/java/com/javatechie/ProductServiceApplicationTests.java b/src/test/java/com/javatechie/ProductServiceApplicationTests.java
+index 1faf165..3a49078 100644
+--- a/src/test/java/com/javatechie/ProductServiceApplicationTests.java
++++ b/src/test/java/com/javatechie/ProductServiceApplicationTests.java
+@@ -6,17 +6,14 @@ org.openrewrite.config.CompositeRecipe
+ import com.javatechie.repository.ProductRepository;
+ import com.javatechie.service.ProductService;
+ import com.javatechie.util.ValueMapper;
+-import org.junit.Before;
++import org.junit.jupiter.api.BeforeEach;
+ import org.junit.jupiter.api.Test;
+-import org.junit.runner.RunWith;
+ import org.mockito.InjectMocks;
+-import org.mockito.Mock;
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+ import org.springframework.boot.test.context.SpringBootTest;
+ import org.springframework.boot.test.mock.mockito.MockBean;
+ import org.springframework.http.MediaType;
+-import org.springframework.test.context.junit4.SpringRunner;
+ import org.springframework.test.web.servlet.MockMvc;
+ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+@@ -32,7 +29,6 @@
+ 
+ @SpringBootTest
+ @AutoConfigureMockMvc
+-@RunWith(SpringRunner.class)
+ class ProductServiceApplicationTests {
+ 
+     private static final String ENDPOINT_URL = "/products";
+@@ -47,7 +43,7 @@
+     @Autowired
+     private MockMvc mockMvc;
+ 
+-    @Before
++    @BeforeEach
+     public void setup() {
+         this.mockMvc = MockMvcBuilders.standaloneSetup(this.productController).build();
+     }
+
+diff --git a/src/test/java/com/javatechie/EncryptKeyGeneratorTest.java b/src/test/java/com/javatechie/EncryptKeyGeneratorTest.java
+index 6a412bc..f48b872 100644
+--- a/src/test/java/com/javatechie/EncryptKeyGeneratorTest.java
++++ b/src/test/java/com/javatechie/EncryptKeyGeneratorTest.java
+@@ -2,7 +2,7 @@ org.openrewrite.config.CompositeRecipe
+ 
+ import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
+ import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
+-import org.junit.Test;
++import org.junit.jupiter.api.Test;
+ 
+ public class EncryptKeyGeneratorTest {
+ 
+

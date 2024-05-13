@@ -2,7 +2,7 @@ package com.javatechie;
 
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class EncryptKeyGeneratorTest {
 
